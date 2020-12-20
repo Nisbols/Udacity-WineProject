@@ -1,0 +1,397 @@
+Analysis of Red Wine by Travis Hinton
+========================================================
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+# knitr: Suppress code/messages/warnings 
+#        Set default plot options and center them
+knitr::opts_chunk$set(fig.width=9,fig.height=5,fig.path='Figs/',
+                      fig.align='center',tidy=TRUE,
+                      echo=FALSE,warning=FALSE,message=FALSE)
+
+library(ggplot2)
+library(dplyr)
+library(knitr)
+library(GGally)
+
+```
+
+```{r echo=FALSE,warning=FALSE,message=FALSE, Load_the_Data}
+# Load the Data
+wineQualityReds <- read.csv("wineQualityReds.csv")
+
+```
+
+
+This report explores the quality of wine.
+
+# Univariate Plots Section
+
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE, Univariate_Plots}
+# Summary of all data values
+summary(wineQualityReds)
+```
+This gives some detailed information on all of the values
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Display structure of data
+str(wineQualityReds)
+```
+We are able to the each values data type
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Display dimension of dataset
+dim(wineQualityReds)
+```
+
+Our dataset has 13 variables with 1599 observations. The variables deal with the attributes of the wine and not taste ingredients, or location where the wine was made.
+
+```{r eecho=FALSE,warning=FALSE,message=FALSE}
+# Plots out Fixed Acidity
+qplot(x = fixed.acidity, data = wineQualityReds, binwidth = .1)
+summary(wineQualityReds$fixed.acidity)
+```
+Fixed Acidity has a long tail
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Volatitle acidity
+qplot(x = volatile.acidity, data = wineQualityReds, binwidth = .05)
+summary(wineQualityReds$volatile.acidity)
+```
+I wonder what accounts for the outlyer at 1.6
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Citric Acid
+qplot(x = citric.acid, data = wineQualityReds, binwidth = .05)
+summary(wineQualityReds$citric.acid)
+```
+Volatile acidity and citrus acid are both under 1 gram not including outliers. I wonder how much the acidity effect quality. 
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Residual Sugar
+qplot(x = residual.sugar, data = wineQualityReds, binwidth = .1)
+summary(wineQualityReds$residual.sugar)
+```
+There is a lot of outliers for sugar. 50% is between 1.90 grams and 2.6 grams. The max is around 15 and a nice little bump is around 4 grams on the chart. 
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Chlorides
+qplot(x = chlorides, data = wineQualityReds)
+summary(wineQualityReds$chlorides)
+```
+Most of the salt content is around the same amount. Besides the outliers I don't think the chlorides will affect much. 
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Free Sulfur Dioxide
+qplot(x = free.sulfur.dioxide, data = wineQualityReds)
+summary(wineQualityReds$free.sulfur.dioxide)
+```
+The Small hump out around 50 is intersting
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Total Sulfur Dioxide
+qplot(x = total.sulfur.dioxide, data = wineQualityReds)
+summary(wineQualityReds$free.sulfur.dioxide)
+```
+
+Sulfur seems to have a lot of outliers. Once again I wonder how this affects quality.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots the Density
+qplot(x = density, data = wineQualityReds)
+summary(wineQualityReds$density)
+```
+Density seems like a standard distorbution
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots pH
+qplot(x = pH, data = wineQualityReds)
+summary(wineQualityReds$pH)
+```
+
+I wonder how high the correlation is for pH level and density are. Both have a low about of outliers and seem to match up pretty well.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots Sulphates
+qplot(x = sulphates, data = wineQualityReds)
+summary(wineQualityReds$sulphates)
+```
+Quite a few outlyers for sulphates
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Plots Alcohol
+qplot(x = alcohol, data = wineQualityReds)
+summary(wineQualityReds$alcohol)
+```
+A long tail on alcohol
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Histogram - Quality
+qplot(x = quality, data = wineQualityReds, geom = "bar") +
+  scale_x_continuous(breaks = seq(1,10,1))
+```
+The quality goes from 0 to 10 but three is only results for 3 - 8
+
+Our dataset has 13 variables with 1599 observations.
+
+
+
+
+# Univariate Analysis
+
+
+
+### What is the structure of your dataset?
+There are 1599 red wines and 13 variables. All variables are measured in grams or milligrams except, pH (measured by the pH scale), alcohol(measured by volume), and quality(messured on a scale of 0 to 10).
+
+### What is/are the main feature(s) of interest in your dataset?
+The main features are quality and alcohol. I would like to know how the other features have the most effect on quality. 
+
+### What other features in the dataset do you think will help support your \\ investigation into your feature(s) of interest?
+pH, alcohol, and sugar. These are three features that are easy to taste. I thinking these will have a huge effect on the quality.
+
+### Did you create any new variables from existing variables in the dataset?
+No I did not create any new variables.
+
+### Of the features you investigated, were there any unusual distributions? \\ Did you perform any operations on the data to tidy, adjust, or change the form \\ of the data? If so, why did you do this?
+Some of the wines have a very large amount of sugar. But at around 15 grams its way lower than the 45 grams that is labeled as sweet wine in the document about the dataset.
+
+# Bivariate Plots Section
+
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE, Bivariate_plots}
+# Displays the correlation between all the values
+round(cor(wineQualityReds), 2)
+```
+Alcohol has the largest correlation with quality.I would like to so how.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Display sulphates to quality using a boxplot
+qplot(aes(group = quality), x = quality, y = sulphates, data = wineQualityReds, geom = 'boxplot')
+```
+The level of suphates seems to have some effect on quality
+
+```{r eecho=FALSE,warning=FALSE,message=FALSE}
+# Makes of plot of alcohol and quality using a boxplot
+qplot(aes(group = quality), x = quality, y = alcohol, data = wineQualityReds, geom = 'boxplot')
+```
+
+Why is the mean the lowest for a quality level of 5 yet has the highest outlier? The trend seems to be more alcohol higher quality, but 5 breaks that.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# A plot of quality and pH using a boxplot
+qplot(aes(group = quality), x = quality, y = pH, data = wineQualityReds, geom = 'boxplot')
+```
+
+pH levels seem to have a low correlation with slight low pH levels being a higher quality
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# A plot of quality and residual sugar using a boxplot
+qplot(aes(group = quality), x = quality, y = residual.sugar, data = wineQualityReds, geom = 'boxplot')
+```
+
+Residual sugar seems to have little or no effect on the level of quality of the wine.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# A plot of quality and density using a boxplot
+qplot(aes(group = quality), x = quality, y = density, data = wineQualityReds, geom = 'boxplot')
+```
+With all the outlyers at 5 and 6 I wonder if peopple just picked the numbers for no good reason.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# A plot of alcohol and pH using points
+qplot(aes(group = quality), x = alcohol, y = pH, data = wineQualityReds, geom = 'point')
+```
+Not suprising, alcohol is in a limited area of the pH scale
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# A plot of alchol and residual sugar using the geom point
+qplot(aes(group = quality), x = alcohol, y = residual.sugar, data = wineQualityReds, geom = 'point')
+```
+Not knowing much about wine I would have though that sugar had some afect on alcohol levels
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# A plot of alcohol and density using the geom point
+qplot(aes(group = quality), x = alcohol, y = density, data = wineQualityReds, geom = 'point')
+```
+
+Alcohol has a negative correlation with density.
+
+```{r echo=FALSE,warning=FALSE,message=FALSE, fig.width=12,fig.height=9}
+# create subset by removing X
+wqr_subset <- subset(wineQualityReds, select = -c(X))
+
+
+ggpairs(wqr_subset) + # The plot is made from the subset of wineQualityReds
+   theme(text = element_text(size=10), # text size set to 10
+     axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size=7),
+             panel.grid.minor = element_blank(), 
+             panel.grid.major = element_blank())  # rotate and resize axis labels
+                                                  # and remove grid lines
+```
+A good overview of the bivariate plots.
+
+# Bivariate Analysis
+
+
+### Talk about some of the relationships you observed in this part of the \\ investigation. How did the feature(s) of interest vary with other features in \\ the dataset?
+
+It seems that most of the data that I though would have a correlation did not. This may be due to my lack of knowable of wine. I thought the sugar level and alcohol levels would have a higher coloration. I am also surprised that sugar didn't have much effect on the rated level of quality. I thought there would be some bias in personal taste but it does not make much of a difference.
+
+### Did you observe any interesting relationships between the other features \\ (not the main feature(s) of interest)?
+
+Overall sugar seems to have a low or no correlation with anything.
+
+### What was the strongest relationship you found?
+The strongest relationship seems to be with citric acid and fixed acidity.
+
+# Multivariate Plots Section
+
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE, Multivariate_Plots}
+# makes plot from Alcohol and pH
+ggplot(aes(x=pH, y=alcohol), data=wineQualityReds) +
+   geom_point(aes(color=as.factor(quality))) +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) + #sets color of data points
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) # sets theme of graph
+```
+Alcohol seems to have the most affect on quality
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+ggplot(aes(x=residual.sugar, y=density), data=wineQualityReds) + # makes a plot from residual sugar and density
+   geom_point(aes(color=as.factor(quality))) +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) + #sets color of data points
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) # sets theme of graph
+```
+Density and sugar don't seem to efect quality
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+ggplot(aes(x=alcohol, y=density), data=wineQualityReds) + # makes a plot from alcohol and density
+   geom_point(aes(color=as.factor(quality))) +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) + #sets color of data points
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) # sets theme of graph
+```
+Less density looks to mean more alcohol and higher quality 
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+ggplot(aes(x=fixed.acidity, y=citric.acid), data=wineQualityReds) + # makes a plot from fixed acidity and citric acid
+   geom_point(aes(color=as.factor(quality))) +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) + #sets color of data points
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) # sets theme of graph
+```
+A grouping is around zero citric acid
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+ggplot(aes(x=pH, y=fixed.acidity), data=wineQualityReds) + # makes a plot from pH and fixed acidity
+   geom_point(aes(color=as.factor(quality))) +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) + #sets color of data points
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) # sets theme of graph
+```
+Under a pH level of 3 the fixed acidity have a wide range. Over 3 and a linear progression shows. 
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+ggplot(aes(x=residual.sugar, y=alcohol), data=wineQualityReds) + # makes a plot from residual sugar and alcohol
+   geom_point(aes(color=as.factor(quality))) +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) + #sets color of data points
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) # sets theme of graph
+```
+Most of the far outlyers are of quality 6
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \\ investigation. Were there features that strengthened each other in terms of \\ looking at your feature(s) of interest?
+
+Quality seems to only have a high correlation with alcohol levels. 
+
+### Were there any interesting or surprising interactions between features?
+No
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the \
+strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+
+### Plot One
+```{r echo=FALSE,warning=FALSE,message=FALSE, Plot_One}
+
+qplot(x = residual.sugar, data = wineQualityReds, binwidth = .1) +
+   theme(plot.title = element_text(hjust = 0.5)) +
+   ggtitle("Levels of Residual Sugar") +
+   xlab(expression(Residual~Sugar~(g/dm^{3}))) +
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey"))
+```
+
+### Description One
+Most of the Sugar Residual is around 2.5 grams. But it is interesting of how large the outliers get. With a max of about 15 grams. 
+
+### Plot Two
+```{r echo=FALSE,warning=FALSE,message=FALSE, Plot_Two}
+qplot(aes(group = quality), x = quality, y = alcohol, data = wineQualityReds, geom = 'boxplot') +
+   theme(plot.title = element_text(hjust = 0.5)) +
+   ggtitle("Quality Levels of Alcohol") +
+   xlab("Quality") +
+  ylab("Alcohol % by Volume") +
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey"))
+```
+
+### Description Two
+This graph shows the levels of alcohol by quality. Most of the outliers is around which is the middle of the 0 - 10 scale. Besides five, as the quality increased so does the alcohol level.
+
+### Plot Three
+```{r echo=FALSE,warning=FALSE,message=FALSE, Plot_Three}
+ggplot(aes(x=residual.sugar, y=density), data=wineQualityReds) +
+   geom_point(aes(color=as.factor(quality))) +
+   theme(plot.title = element_text(hjust = 0.5)) +
+   ggtitle("Quality of Residual Sugar\nby Density") +
+   scale_color_brewer(palette = "RdYlBu", name="Quality", direction=-1) +
+   theme(panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "darkgrey")) +
+    xlab(expression(Residual~Sugar~(g/dm^{3}))) +
+  ylab(expression(Density~(g/cm^{3})))
+```
+
+### Description Three
+
+This graph details the quality of residual sugar by density. Residual sugar and density have little effect on the quality. 
+
+------
+
+# Reflection
+This was my first deep dive into R and I love it. R seems great for working with data that needs to be shown off. I had to think more about how the information will look then I had to before taking this course. Rstudio also makes working with R easy with it's tab complection and help function. Over all I'm glad I learn this and plan to use R in future projects. 
+
+This data set of red wine chemical properties and quality contains 1,599 red wines with 11 variables. Though out my exploration of the data I wanted to find out the relationship of quality to the chemical properties and the properties to themselves. Looking at the data I found that alcohol levels have a high correlation to quality levels. Though I found it strange that density levels didn’t have as high as a correlation with quality even though it has a very high correlation with alcohol. Some other interesting things were how wide a range sugar. Overall a good look into what effects the quality of red wine.
+
+One thing I would like to expand on is why quality has so many 5 and 6. Was there a wide range of quality perefernces or did most people pick 5 or 6. I'll have to look at the data set used to make the quality value.
+
